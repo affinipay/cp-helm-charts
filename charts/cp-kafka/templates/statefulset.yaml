@@ -114,6 +114,8 @@ spec:
           value: "io.confluent.metrics.reporter.ConfluentMetricsReporter"
         - name: CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS
           value: {{ printf "PLAINTEXT://%s:9092" (include "cp-kafka.cp-kafka-headless.fullname" .) | quote }}
+        - name: KAFKA_BROKER_ID_OFFSET
+          value: {{ .Values.brokerIdOffset | quote }}
         {{- range $key, $value := .Values.configurationOverrides }}
         - name: {{ printf "KAFKA_%s" $key | replace "." "_" | upper | quote }}
           value: {{ $value | quote }}
@@ -134,7 +136,7 @@ spec:
         - sh
         - -exc
         - |
-          export KAFKA_BROKER_ID=${HOSTNAME##*-} && \
+          export KAFKA_BROKER_ID=$((${HOSTNAME##*-}+${KAFKA_BROKER_ID_OFFSET})) && \
           export KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${POD_IP}:9092{{ if kindIs "string" $advertisedListenersOverride }}{{ printf ",%s" $advertisedListenersOverride }}{{ end }} && \
           {{ .Values.rackAware.enabled }} && export KAFKA_BROKER_RACK=$(curl -sSk -H "Authorization: Bearer `cat /var/run/secrets/kubernetes.io/serviceaccount/token`" https://kubernetes.default/api/v1/nodes/$NODE_NAME|grep failure-domain.beta.kubernetes.io/zone | sed 's/.*: "\(.*\)",/\1/') ; \
           exec /etc/confluent/docker/run

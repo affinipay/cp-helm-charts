@@ -9,6 +9,10 @@
 ## Number of Kafka brokers
 brokers: 3
 
+## The offset at which to begin broker IDs
+## Useful for replicating data between clusters
+brokerIdOffset: 0
+
 ## Image Info
 ## ref: https://hub.docker.com/r/confluentinc/cp-kafka/
 image: confluentinc/cp-enterprise-kafka

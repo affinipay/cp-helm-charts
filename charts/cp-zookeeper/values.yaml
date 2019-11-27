@@ -9,6 +9,10 @@
 ## Number of zookeeper servers, should be odd number
 servers: 3
 
+## The offset at which to begin server IDs
+## Useful for replicating data between clusters
+serverOffsetId: 0
+
 ## Minimum number of servers available to ensure the availability of zookeeper service
 ## minAvailable: 2
 
