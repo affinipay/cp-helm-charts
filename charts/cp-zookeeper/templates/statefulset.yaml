@@ -105,19 +105,25 @@ spec:
         - name: ZOOKEEPER_CLIENT_PORT
           value: "{{ .Values.clientPort }}"
         - name : ZOOKEEPER_SERVERS
+          {{- if .Values.serverListOverride }}
+          value: {{ .Values.serverListOverride }}
+          {{- else }}
           value: {{ template "cp-zookeeper.serverlist" . }}
+          {{- end }}
         # ZOOKEEPER_SERVER_ID is required just to pass cp-zookeeper ensure script for env check,
         # the value(metadata.mame) is not used and will be overwritten in command part
         - name: ZOOKEEPER_SERVER_ID
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
+        - name: ZOOKEEPER_SERVER_ID_OFFSET
+          value: {{ .Values.serverIdOffset | quote }}
         command:
         - "bash"
         - "-c"
         - |
           ZK_FIX_HOST_REGEX="s/${HOSTNAME}\.[^:]*:/0.0.0.0:/g"
-          ZOOKEEPER_SERVER_ID=$((${HOSTNAME##*-}+1)) \
+          ZOOKEEPER_SERVER_ID=$((${HOSTNAME##*-}+1+${ZOOKEEPER_SERVER_ID_OFFSET})) \
           ZOOKEEPER_SERVERS=`echo $ZOOKEEPER_SERVERS | sed -e "$ZK_FIX_HOST_REGEX"` \
           /etc/confluent/docker/run
         volumeMounts:
