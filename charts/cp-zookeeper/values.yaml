@@ -92,6 +92,9 @@ resources: {}
 ## Custom pod annotations
 podAnnotations: {}
 
+## Headless service annotations
+headlessServiceAnnotations: {}
+
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
 nodeSelector: {}

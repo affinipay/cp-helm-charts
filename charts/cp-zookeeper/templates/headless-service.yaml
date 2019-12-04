@@ -7,6 +7,10 @@ metadata:
     chart: {{ template "cp-zookeeper.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+  annotations:
+    {{- range $key, $value := .Values.headlessServiceAnnotations }}
+      {{ $key }}: {{ $value | quote }}
+    {{- end }}
 spec:
   ports:
     - port: {{ .Values.serverPort }}
