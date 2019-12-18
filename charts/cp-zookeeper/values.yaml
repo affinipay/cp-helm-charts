@@ -103,6 +103,11 @@ nodeSelector: {}
 ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
 tolerations: {}
 
+nodeport:
+  enabled: false
+  servicePort: 2181
+  firstListenerPort: 31020
+
 ## Monitoring
 ## Zookeeper JMX Settings
 ## ref: https://docs.confluent.io/current/installation/docker/docs/operations/monitoring.html
