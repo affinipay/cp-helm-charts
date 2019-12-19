@@ -1,41 +1,41 @@
 {{- if .Values.nodeport.enabled }}
   {{- $domain := required "A valid DNS domain for the cluster must be provided." .Values.clusterDomain }}
   {{- $clusterName := .Values.clusterName }}
-  {{- $fullName := include "cp-kafka.fullname" . }}
+  {{- $fullName := include "cp-zookeeper.fullname" . }}
   {{- $podFullName := printf "%s-cp-kafka" .Release.Name }}
-  {{- $brokers := .Values.brokers | int }}
+  {{- $servers := .Values.servers | int }}
   {{- $servicePort := .Values.nodeport.servicePort }}
   {{- $annotations := .Values.nodeport.annotations }}
   {{- $root := . }}
-  {{- range $i, $e := until $brokers }}
+  {{- range $i, $e := until $servers }}
     {{- $externalListenerPort := add $root.Values.nodeport.firstListenerPort $i }}
-    {{- $responsiblePod := printf "%s-%d" (printf "%s" $podFullName) $i }}
+    {{- $responsiblePod := printf "%s-%d" (printf "%s" $fullName) $i }}
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "cp-kafka.fullname" $root }}-{{ $i }}-nodeport
+  name: {{ template "cp-zookeeper.fullname" $root }}-{{ $i }}-nodeport
   annotations:
-    external-dns.alpha.kubernetes.io/hostname: "{{ $clusterName }}.{{ $domain }}"
+    external-dns.alpha.kubernetes.io/hostname: "{{ $clusterName }}-zookeeper.{{ $domain }}"
     {{- range $key, $value := $annotations }}
       {{ $key }}: {{ $value | quote }}
     {{- end }}
   labels:
-    app: {{ include "cp-kafka.name" $root }}
-    chart: {{ template "cp-kafka.chart" $root }}
+    app: {{ include "cp-zookeeper.name" $root }}
+    chart: {{ template "cp-zookeeper.chart" $root }}
     release: {{ $root.Release.Name }}
     heritage: {{ $root.Release.Service }}
     pod: {{ $responsiblePod }}
 spec:
   type: NodePort
   ports:
-    - name: external-broker
+    - name: external-server
       targetPort: {{ $servicePort }}
       port: {{ $externalListenerPort }}
       nodePort: {{ $externalListenerPort }}
       protocol: TCP
   selector:
-    app: {{ include "cp-kafka.name" $root }}
+    app: {{ include "cp-zookeeper.name" $root }}
     release: {{ $root.Release.Name }}
     statefulset.kubernetes.io/pod-name: {{ $responsiblePod | quote }}
   {{- end }}

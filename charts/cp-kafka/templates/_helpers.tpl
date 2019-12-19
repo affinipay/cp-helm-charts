@@ -50,7 +50,7 @@ else use user-provided URL
 {{- printf "%s:%d" (include "cp-kafka.cp-zookeeper.fullname" .) $clientPort }}
 {{- else -}}
 {{- $zookeeperConnect := printf "%s" (index .Values "cp-zookeeper" "url") }}
-{{- $zookeeperConnectOverride := (index .Values "configurationOverrides" "zookeeper.connect") }}
+{{- $zookeeperConnectOverride := (index .Values "brokerZookeeperConnect") }}
 {{- default $zookeeperConnect $zookeeperConnectOverride }}
 {{- end -}}
 {{- end -}}
