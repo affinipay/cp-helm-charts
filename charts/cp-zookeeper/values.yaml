@@ -99,6 +99,15 @@ headlessServiceAnnotations: {}
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
 nodeSelector: {}
 
+## Whether or not to apply a security context to the StatefulSet pods, and the specification
+## of that security context.
+securityContext:
+  enabled: false
+  spec:
+    runAsUser: 5000
+    runAsGroup: 5000
+    fsGroup: 5000
+
 ## Taints to tolerate on node assignment:
 ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
 tolerations: {}
