@@ -128,6 +128,8 @@ spec:
           /etc/confluent/docker/run
         volumeMounts:
         {{- if .Values.securityContext.enabled }}
+        - name: etc
+          mountPath: /etc/kafka
         - name: dataroot
           mountPath: /var/lib/zookeeper
         {{- end }}
@@ -140,10 +142,14 @@ spec:
 {{ toYaml .Values.imagePullSecrets | indent 8 }}
       {{- end }}
       volumes:
+      {{- if .Values.securityContext.enabled }}
       # Create an emptyDir for the root of the zookeeper data directory, since 
       # it is only writable by root in the image.
-      {{- if .Values.securityContext.enabled }}
       - name: dataroot
+        emptyDir: {}
+      # Create an emptyDir for /etc/kafka, since apparently the image will write
+      # zookeeper's config files there.
+      - name: etc
         emptyDir: {}
       {{- end }}
       {{ if not .Values.persistence.enabled }}
