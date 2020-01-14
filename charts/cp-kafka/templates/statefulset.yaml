@@ -112,8 +112,10 @@ spec:
           value: {{ include "cp-kafka.log.dirs" . | quote }}
           # Workaround a regression in the confluent image
           # https://github.com/confluentinc/cp-docker-images/issues/653
+          # This value gets passed into Confluent's `dub` tool, which can only 
+          # check a single path.
         - name: KAFKA_DATA_DIRS
-          value: {{ include "cp-kafka.log.dirs" . | quote }}
+          value: {{ include "cp-kafka.log.dirs" . | splitList "," | first | quote }}
         - name: KAFKA_METRIC_REPORTERS
           value: "io.confluent.metrics.reporter.ConfluentMetricsReporter"
         - name: CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS
