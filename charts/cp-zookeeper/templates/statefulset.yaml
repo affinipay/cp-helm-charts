@@ -127,6 +127,10 @@ spec:
           ZOOKEEPER_SERVERS=`echo $ZOOKEEPER_SERVERS | sed -e "$ZK_FIX_HOST_REGEX"` \
           /etc/confluent/docker/run
         volumeMounts:
+        {{- if .Values.securityContext.enabled }}
+        - name: dataroot
+          mountPath: /var/lib/zookeeper
+        {{- end }}
         - name: datadir
           mountPath: /var/lib/zookeeper/data
         - name: datalogdir
@@ -136,6 +140,12 @@ spec:
 {{ toYaml .Values.imagePullSecrets | indent 8 }}
       {{- end }}
       volumes:
+      # Create an emptyDir for the root of the zookeeper data directory, since 
+      # it is only writable by root in the image.
+      {{- if .Values.securityContext.enabled }}
+      - name: dataroot
+        emptyDir: {}
+      {{- end }}
       {{ if not .Values.persistence.enabled }}
       - name: datadir
         emptyDir: {}
