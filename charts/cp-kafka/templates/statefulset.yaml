@@ -171,8 +171,8 @@ spec:
           name: {{ template "cp-kafka.fullname" . }}-jmx-configmap
       {{- end }}
       {{- if .Values.securityContext.enabled }}
-        - name: etc
-          emptyDir: {}
+      - name: etc
+        emptyDir: {}
       {{ end }}
       {{- if .Values.nodeSelector }}
       nodeSelector:
