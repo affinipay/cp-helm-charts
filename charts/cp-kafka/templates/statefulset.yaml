@@ -152,6 +152,10 @@ spec:
         - name: datadir-{{$k}}
           mountPath: /opt/kafka/data-{{$k}}
         {{- end }}
+        {{- if .Values.securityContext.enabled }}
+        - name: etc
+          mountPath: /etc/kafka
+        {{- end }}
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
 {{ toYaml .Values.imagePullSecrets | indent 8 }}
@@ -175,6 +179,11 @@ spec:
 {{ toYaml .Values.tolerations | indent 8 }}
       {{- end }}
       {{- if .Values.securityContext.enabled }}
+      volumes:
+        {{- if .Values.securityContext.enabled }}
+        - name: etc
+          emptyDir: {}
+        {{- end }}
       securityContext:
 {{ toYaml .Values.securityContext.spec | indent 8 }}
       {{- end }}
