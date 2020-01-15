@@ -180,10 +180,8 @@ spec:
       {{- end }}
       {{- if .Values.securityContext.enabled }}
       volumes:
-        {{- if .Values.securityContext.enabled }}
         - name: etc
           emptyDir: {}
-        {{- end }}
       securityContext:
 {{ toYaml .Values.securityContext.spec | indent 8 }}
       {{- end }}
