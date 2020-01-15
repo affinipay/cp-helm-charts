@@ -170,6 +170,10 @@ spec:
         configMap:
           name: {{ template "cp-kafka.fullname" . }}-jmx-configmap
       {{- end }}
+      {{- if .Values.securityContext.enabled }}
+        - name: etc
+          emptyDir: {}
+      {{ end }}
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
@@ -179,9 +183,6 @@ spec:
 {{ toYaml .Values.tolerations | indent 8 }}
       {{- end }}
       {{- if .Values.securityContext.enabled }}
-      volumes:
-        - name: etc
-          emptyDir: {}
       securityContext:
 {{ toYaml .Values.securityContext.spec | indent 8 }}
       {{- end }}
