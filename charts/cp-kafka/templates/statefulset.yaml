@@ -119,7 +119,7 @@ spec:
         - name: KAFKA_METRIC_REPORTERS
           value: "io.confluent.metrics.reporter.ConfluentMetricsReporter"
         - name: CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS
-          value: {{ printf "PLAINTEXT://%s:9092" (include "cp-kafka.cp-kafka-headless.fullname" .) | quote }}
+          value: PLAINTEXT://localhost:9092
         - name: KAFKA_BROKER_ID_OFFSET
           value: {{ .Values.brokerIdOffset | quote }}
         {{- range $key, $value := .Values.configurationOverrides }}
