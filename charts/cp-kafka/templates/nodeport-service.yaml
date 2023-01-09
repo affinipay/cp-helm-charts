@@ -18,7 +18,7 @@ metadata:
   annotations:
     external-dns.alpha.kubernetes.io/hostname: "{{ $clusterName }}.{{ $domain }}"
     {{- range $key, $value := $annotations }}
-      {{ $key }}: {{ $value | quote }}
+    {{ $key }}: {{ $value | quote }}
     {{- end }}
   labels:
     app: {{ include "cp-kafka.name" $root }}
